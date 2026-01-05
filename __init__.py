@@ -62,6 +62,11 @@ def commits_api():
 
     return jsonify(results=results)
 
+@app.route('/commits/')
+def commits_graph():
+    return render_template("commits.html")
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
