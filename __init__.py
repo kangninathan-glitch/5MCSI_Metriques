@@ -2,7 +2,6 @@ from flask import Flask, render_template, jsonify
 from flask import json
 from urllib.request import urlopen
 from datetime import datetime
-import requests
 
 
 app = Flask(__name__)
@@ -49,9 +48,9 @@ def histogramme():
 
 @app.route('/commits-api/')
 def commits_api():
-    url = "https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits"
-    response = requests.get(url, timeout=10)
-    commits = response.json()
+    url = 'https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits'
+    raw = urlopen(url).read()
+    commits = json.loads(raw.decode('utf-8'))
 
     results = []
     for c in commits:
@@ -61,6 +60,7 @@ def commits_api():
         results.append({"minute": minute})
 
     return jsonify(results=results)
+
 
 @app.route('/commits/')
 def commits_graph():
