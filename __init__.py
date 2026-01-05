@@ -1,4 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
+from flask import json
+from urllib.request import urlopen
 
 app = Flask(__name__)
 
@@ -18,19 +20,19 @@ def meteo():
 
     results = []
 
-for list_element in json_content.get('list', []):
-    dt_value = list_element.get('dt')
+    for list_element in json_content.get('list', []):
+        dt_value = list_element.get('dt')
 
-    temp_k = list_element.get('main', {}).get('temp')
-    if temp_k is None:
-        continue  # on saute cet élément s'il n'y a pas de température
+        temp_k = list_element.get('main', {}).get('temp')
+        if temp_k is None:
+            continue  # on saute cet élément s'il n'y a pas de température
 
-    temp_day_value = temp_k - 273.15  # Kelvin -> °C
+        temp_day_value = temp_k - 273.15  # Kelvin -> °C
 
-    results.append({
-        'Jour': dt_value,
-        'temp': temp_day_value
-    })
+        results.append({
+            'Jour': dt_value,
+            'temp': temp_day_value
+        })
 
     return jsonify(results=results)
 
