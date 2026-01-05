@@ -18,13 +18,19 @@ def meteo():
 
     results = []
 
-    for list_element in json_content.get('list', []):
-        dt_value = list_element.get('dt')
-        temp_day_value = list_element.get('main', {}).get('temp') - 273.15  # Kelvin -> °C
-        results.append({
-            'Jour': dt_value,
-            'temp': temp_day_value
-        })
+for list_element in json_content.get('list', []):
+    dt_value = list_element.get('dt')
+
+    temp_k = list_element.get('main', {}).get('temp')
+    if temp_k is None:
+        continue  # on saute cet élément s'il n'y a pas de température
+
+    temp_day_value = temp_k - 273.15  # Kelvin -> °C
+
+    results.append({
+        'Jour': dt_value,
+        'temp': temp_day_value
+    })
 
     return jsonify(results=results)
 
