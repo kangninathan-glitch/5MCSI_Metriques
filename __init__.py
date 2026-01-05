@@ -1,6 +1,9 @@
 from flask import Flask, render_template, jsonify
 from flask import json
 from urllib.request import urlopen
+from datetime import datetime
+import requests
+
 
 app = Flask(__name__)
 
@@ -43,6 +46,29 @@ def mongraphique():
 @app.route("/histogramme/")
 def histogramme():
     return render_template("histogramme.html")
+
+@app.route('/commits-api/')
+def commits_api():
+    url = "https://api.github.com/repos/OpenRSI/5MCSI_Metriques/commits"
+    response = requests.get(url)
+    commits = response.json()
+
+    results = []
+
+    for commit in commits:
+        date_str = commit['commit']['author']['date']
+        date_obj = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
+        minute = date_obj.strftime("%H:%M")
+
+        results.append({
+            "minute": minute
+        })
+
+    return jsonify(results=results)
+
+@app.route('/commits/')
+def commits_graph():
+    return render_template("commits.html")
 
 
 
